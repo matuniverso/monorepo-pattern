@@ -20,17 +20,17 @@ class Login extends Controller
         /** @var User $user */
         $user = User::whereEmail($request->email)->first();
 
-        if (!$user && !Hash::check($request->password, $user->password)) {
+        if ($user && Hash::check($request->password, $user->password)) {
+            $token = $user->createToken('auth')->plainTextToken;
+
             return response()->json([
-                'message' => 'Wrong credentials.'
-            ], 404);
+                'token' => $token,
+                'user' => $user
+            ], 200);
         }
 
-        $token = $user->createToken('auth')->plainTextToken;
-
         return response()->json([
-            'token' => $token,
-            'user' => $user
-        ], 200);
+            'message' => 'Wrong credentials.'
+        ], 404);
     }
 }

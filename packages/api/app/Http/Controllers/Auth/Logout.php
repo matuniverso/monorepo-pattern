@@ -19,7 +19,7 @@ class Logout extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $user->tokens()->delete();
+        $user->tokens()->whereName('auth')->delete();
 
         return response()->json([
             'message' => 'Logged out!'
