@@ -1,12 +1,20 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import Link from 'next/link'
+import { AuthContext } from '../contexts/AuthContext'
+
+type Request = {
+  name: string
+  email: string
+  password: string
+}
 
 const Register: FC = () => {
+  const { signUp } = useContext(AuthContext)
   const { register, handleSubmit } = useForm()
 
-  const onsubmit = handleSubmit((data) => {
-    console.log(data)
+  const onsubmit = handleSubmit(async (data: Request) => {
+    await signUp(data)
   })
 
   return (
