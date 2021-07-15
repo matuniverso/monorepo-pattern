@@ -2,6 +2,8 @@ import React, { FC, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import Link from 'next/link'
 import { AuthContext } from '../contexts/AuthContext'
+import { GetServerSideProps } from 'next'
+import { parseCookies } from 'nookies'
 
 type Request = {
   name: string
@@ -92,6 +94,23 @@ const Register: FC = () => {
       </div>
     </div>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { ['AUTH-TOKEN']: token } = parseCookies(ctx)
+
+  if (token) {
+    return {
+      redirect: {
+        destination: '/dashboard',
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: {}
+  }
 }
 
 export default Register

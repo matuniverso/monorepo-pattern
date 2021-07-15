@@ -32,6 +32,7 @@ type T = {
   isAuthenticated: boolean
   signIn: (data: Request) => Promise<void>
   signUp: (data: RegisterRequest) => Promise<void>
+  signOut: () => Promise<void>
 }
 
 export const AuthContext = createContext({} as T)
@@ -56,11 +57,15 @@ export const AuthProvider: FC = ({ children }) => {
     const response = await api.post('/api/login', data)
     const { token, user }: Response = response.data
 
-    setUser(user)
-
     setCookie(undefined, 'AUTH-TOKEN', token, {
-      maxAge: 60 * 60 * 1 // 1h
+      maxAge: 60 * 60 * 1,
+      sameSite: 'lax',
+      secure: true
     })
+
+    api.defaults.headers['Authorization'] = `Bearer ${token}`
+
+    setUser(user)
 
     route.push('/dashboard')
   }
@@ -69,17 +74,38 @@ export const AuthProvider: FC = ({ children }) => {
     const response = await api.post('/api/register', data)
     const { token, user }: Response = response.data
 
-    setUser(user)
-
     setCookie(undefined, 'AUTH-TOKEN', token, {
-      maxAge: 60 * 60 * 1 // 1h
+      maxAge: 60 * 60 * 1,
+      sameSite: 'lax',
+      secure: true
     })
+
+    api.defaults.headers['Authorization'] = `Bearer ${token}`
+
+    setUser(user)
 
     route.push('/dashboard')
   }
 
+  async function signOut() {
+    if (isAuthenticated) {
+      await api.post('/api/logout').then(() => {
+        setUser(null)
+
+        setCookie(undefined, 'AUTH-TOKEN', '', {
+          maxAge: 0,
+          sameSite: 'lax',
+          secure: true
+        })
+
+        route.push('/')
+      })
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, signIn, signUp }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   )
