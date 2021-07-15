@@ -11,5 +11,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', fn () => auth()->user());
+
     Route::post('/logout', Logout::class);
 });
