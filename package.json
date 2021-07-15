@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "name": "monorepo",
+  "version": "0.1.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-prettier-standard": "^4.0.1",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "prettier": "^2.3.2",
+    "prettier-config-standard": "^4.0.0"
+  }
+}
