@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { useForm } from 'react-hook-form'
 import Link from 'next/link'
 
-const Home: FC = () => {
+const Register: FC = () => {
   const { register, handleSubmit } = useForm()
 
   const onsubmit = handleSubmit((data) => {
@@ -12,9 +12,28 @@ const Home: FC = () => {
   return (
     <div className="grid w-screen h-screen bg-gray-100 place-items-center">
       <div className="px-10 py-16 bg-white rounded shadow-lg">
-        <h1 className="mb-12 text-2xl text-center">Sign in</h1>
+        <h1 className="mb-12 text-2xl text-center">Sign up</h1>
 
         <form onSubmit={onsubmit} className="flex flex-col">
+          <div className="relative mb-8">
+            <input
+              {...register('name')}
+              type="text"
+              id="name"
+              placeholder="Name"
+              className="px-2 py-1 placeholder-transparent transition-all rounded focus:ring-indigo-500 peer focus:outline-none ring"
+              autoComplete="off"
+              required
+              autoFocus
+              autoCapitalize="words"
+            />
+            <label
+              htmlFor="name"
+              className="absolute left-0 text-sm transition-all peer-placeholder-shown:text-base -top-6 peer-placeholder-shown:text-gray-500 cursor-text peer-placeholder-shown:top-1 peer-placeholder-shown:left-2">
+              Name
+            </label>
+          </div>
+
           <div className="relative mb-8">
             <input
               {...register('email')}
@@ -24,7 +43,6 @@ const Home: FC = () => {
               className="px-2 py-1 placeholder-transparent transition-all rounded focus:ring-indigo-500 peer focus:outline-none ring"
               autoComplete="off"
               required
-              autoFocus
             />
             <label
               htmlFor="email"
@@ -53,14 +71,14 @@ const Home: FC = () => {
           <button
             type="submit"
             className="p-2 mb-4 font-semibold text-white bg-purple-500 rounded ring ring-purple-500">
-            Sign in
+            Sign up
           </button>
         </form>
 
         <div className="text-sm text-center">
-          <span className="text-gray-500">Do not have an account?</span>
-          <Link href="/register">
-            <a className="ml-1">Sign up</a>
+          <span className="text-gray-500">Already have an account?</span>
+          <Link href="/">
+            <a className="ml-1">Sign in</a>
           </Link>
         </div>
       </div>
@@ -68,4 +86,4 @@ const Home: FC = () => {
   )
 }
 
-export default Home
+export default Register
