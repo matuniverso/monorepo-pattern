@@ -1,6 +1,6 @@
 import { useRouter } from 'next/dist/client/router'
-import { setCookie } from 'nookies'
-import React, { createContext, FC, useState } from 'react'
+import { parseCookies, setCookie } from 'nookies'
+import React, { createContext, FC, useEffect, useState } from 'react'
 import api from '../services/api'
 
 type User = {
@@ -42,27 +42,37 @@ export const AuthProvider: FC = ({ children }) => {
 
   const isAuthenticated = !!user
 
+  useEffect(() => {
+    const { 'AUTH-TOKEN': token } = parseCookies()
+
+    if (token) {
+      api.get('/api/user').then((response) => {
+        setUser(response.data)
+      })
+    }
+  }, [])
+
   async function signIn(data: Request) {
-    const { token, user }: Response = await api.post('/api/login', data)
+    const response = await api.post('/api/login', data)
+    const { token, user }: Response = response.data
 
     setUser(user)
 
     setCookie(undefined, 'AUTH-TOKEN', token, {
-      maxAge: 60 * 60 * 1, // 1h
-      sameSite: 'lax'
+      maxAge: 60 * 60 * 1 // 1h
     })
 
     route.push('/dashboard')
   }
 
   async function signUp(data: RegisterRequest) {
-    const { token, user }: Response = await api.post('/api/register', data)
+    const response = await api.post('/api/register', data)
+    const { token, user }: Response = response.data
 
     setUser(user)
 
     setCookie(undefined, 'AUTH-TOKEN', token, {
-      maxAge: 60 * 60 * 1, // 1h
-      sameSite: 'lax'
+      maxAge: 60 * 60 * 1 // 1h
     })
 
     route.push('/dashboard')

@@ -1,16 +1,8 @@
-import { useRouter } from 'next/dist/client/router'
 import React, { FC, useContext, useEffect } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
 
 const Dashboard: FC = () => {
-  const route = useRouter()
-  const { user, isAuthenticated } = useContext(AuthContext)
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      route.push('/')
-    }
-  }, [])
+  const { user } = useContext(AuthContext)
 
   return (
     <div className="w-screen h-screen bg-gray-100">
