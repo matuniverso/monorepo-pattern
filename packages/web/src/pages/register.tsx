@@ -16,7 +16,9 @@ const Register: FC = () => {
   const { register, handleSubmit } = useForm()
 
   const onsubmit = handleSubmit(async (data: Request) => {
-    await signUp(data)
+    const response = await signUp(data)
+
+    console.log(response)
   })
 
   return (
@@ -97,7 +99,7 @@ const Register: FC = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { ['AUTH-TOKEN']: token } = parseCookies(ctx)
+  const { 'AUTH-TOKEN': token } = parseCookies(ctx)
 
   if (token) {
     return {

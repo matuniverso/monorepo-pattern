@@ -78,7 +78,7 @@ const Home: FC = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { ['AUTH-TOKEN']: token } = parseCookies(ctx)
+  const { 'AUTH-TOKEN': token } = parseCookies(ctx)
 
   if (token) {
     return {

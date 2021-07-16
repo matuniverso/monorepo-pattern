@@ -13,12 +13,16 @@ const Dashboard: FC = () => {
   })
 
   return (
-    <div className="w-screen h-screen bg-gray-100">
-      <div className="grid place-items-center">
-        <h1 className="text-xl">Hello {user?.name}</h1>
-        <h2>You are logged in!</h2>
+    <div className="grid w-screen h-screen bg-gray-100">
+      <div className="text-center place-self-center">
+        <h1 className="text-xl">
+          Hello <span className="font-semibold">{user?.name}!</span>
+        </h1>
+        <h2>You are logged in :)</h2>
         <form onSubmit={onsubmit}>
-          <button type="submit">Logout</button>
+          <button type="submit" className="font-bold">
+            Sign out
+          </button>
         </form>
       </div>
     </div>
@@ -26,7 +30,7 @@ const Dashboard: FC = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { ['AUTH-TOKEN']: token } = parseCookies(ctx)
+  const { 'AUTH-TOKEN': token } = parseCookies(ctx)
 
   if (!token) {
     return {

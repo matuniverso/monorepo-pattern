@@ -38,29 +38,30 @@ type T = {
 export const AuthContext = createContext({} as T)
 
 export const AuthProvider: FC = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null)
   const route = useRouter()
+  const [user, setUser] = useState<User | null>(null)
+  const { 'AUTH-TOKEN': token } = parseCookies()
 
-  const isAuthenticated = !!user
+  const isAuthenticated = !!token
 
   useEffect(() => {
-    const { 'AUTH-TOKEN': token } = parseCookies()
-
-    if (token) {
+    if (isAuthenticated) {
       api.get('/api/user').then((response) => {
         setUser(response.data)
       })
     }
   }, [])
 
-  async function signIn(data: Request) {
-    const response = await api.post('/api/login', data)
+  async function doAuthentication(
+    target: string,
+    data: Request | RegisterRequest
+  ) {
+    const response = await api.post(target, data)
     const { token, user }: Response = response.data
 
     setCookie(undefined, 'AUTH-TOKEN', token, {
       maxAge: 60 * 60 * 1,
-      sameSite: 'lax',
-      secure: true
+      sameSite: 'lax'
     })
 
     api.defaults.headers['Authorization'] = `Bearer ${token}`
@@ -70,33 +71,23 @@ export const AuthProvider: FC = ({ children }) => {
     route.push('/dashboard')
   }
 
+  async function signIn(data: Request) {
+    await doAuthentication('/api/login', data)
+  }
+
   async function signUp(data: RegisterRequest) {
-    const response = await api.post('/api/register', data)
-    const { token, user }: Response = response.data
-
-    setCookie(undefined, 'AUTH-TOKEN', token, {
-      maxAge: 60 * 60 * 1,
-      sameSite: 'lax',
-      secure: true
-    })
-
-    api.defaults.headers['Authorization'] = `Bearer ${token}`
-
-    setUser(user)
-
-    route.push('/dashboard')
+    await doAuthentication('/api/register', data)
   }
 
   async function signOut() {
     if (isAuthenticated) {
       await api.post('/api/logout').then(() => {
-        setUser(null)
-
         setCookie(undefined, 'AUTH-TOKEN', '', {
           maxAge: 0,
-          sameSite: 'lax',
-          secure: true
+          sameSite: 'lax'
         })
+
+        setUser(null)
 
         route.push('/')
       })
