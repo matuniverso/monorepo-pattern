@@ -18,8 +18,8 @@ class Register extends Controller
     public function __invoke(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['string'],
-            'email' => ['email', 'unique:users'],
+            'name' => ['required', 'string'],
+            'email' => ['required', 'email', 'unique:users'],
             'password' => Password::min(8)->required()
         ]);
 
